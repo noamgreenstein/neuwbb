@@ -1,10 +1,15 @@
 import datetime
 
+from reporting.postgame import PostGameReport
 from reporting.pregame import PreGameReport
+from google_docs.generator import pregame, postgame
 
 choices = {
-    '1': PreGameReport
+    '1': (PreGameReport, pregame),
+    '2': (PostGameReport, postgame)
 }
+
+
 
 get_games = '''
 select g.game_id, g.game_date, g.home_id, g.away_id, t1.name, t2.name, t1.abbrev, t2.abbrev

@@ -1,8 +1,5 @@
-import math
-
 from sklearn.metrics import roc_curve, auc
 from sklearn.model_selection import StratifiedKFold
-from collections import Counter
 import reporting.constants as c
 import numpy as np
 from scraping import scraper
@@ -25,10 +22,10 @@ class PreGameReport:
         self.get_players()
         data = self.get_data()
         player_data = self.get_player_data()
-        self.get_benchmarks(data, self.team_data)
+        self.team_data = self.get_benchmarks(data)
         for player in player_data:
-            self.player_data[player] = {}
-            self.get_benchmarks(player_data[player], self.player_data[player])
+            self.player_data[player] = self.get_benchmarks(player_data[player])
+        self.insert_benchmarks()
 
     def get_players(self):
         curr_players = [p[0] for p in self.db.get_all(c.get_players.format(self.opp))]
@@ -46,7 +43,9 @@ class PreGameReport:
         player_data = scraper.get_player_stats(players)
         return player_data
 
-    def get_benchmarks(self, data, data_dict):
+    @staticmethod
+    def get_benchmarks(data):
+        data_dict = {}
         df1, df2 = data
         df1.fillna(0, inplace=True)
         df2.fillna(0, inplace=True)
@@ -58,7 +57,6 @@ class PreGameReport:
             total_stat = np.concatenate([df1[column].values, df2[column].values])
 
             kfold = StratifiedKFold(n_splits=4, shuffle=True, random_state=42)
-
 
             x = np.array(total_stat).reshape(-1, 1)
             auc_scores = []
@@ -99,6 +97,35 @@ class PreGameReport:
                 'optimal amount': optimal_stat,
                 'direction': most_common_direction
             }
+
+        return data_dict
+
+    def insert_benchmarks(self):
+        insert_str = ''
+
+        def add_mark(data, target, name):
+            if data['AUC'] > .7:
+                opt_val = data['optimal amount']
+                drt = data['direction']
+                pct = '%' in data
+                if str(opt_val) != 'nan' and drt != 'Flat':
+                    return c.mark_value.format(self.game_id, target, drt == "Reverse",
+                                               round(opt_val * 100, 0) if pct else int(
+                                                   round(opt_val, 0)),
+                                               name)
+            return ''
+
+        for mark in self.team_data:
+            insert_str += add_mark(self.team_data[mark], self.opp, mark)
+
+        for player in self.player_data:
+            player_id = self.db.get_one(c.get_player_by_name.format(self.opp,
+                                                                    player.split(' ')[0],
+                                                                    player.split(' ')[1]))[0]
+            for mark in self.player_data[player]:
+                insert_str += add_mark(self.player_data[player][mark], player_id, mark)
+
+        self.db.execute_insert(c.insert_mark.format(insert_str[:-1]))
 
     def get_report(self):
         pass

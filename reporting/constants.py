@@ -38,5 +38,9 @@ from players
 where team_id = {}
 '''
 
+insert_mark = '''
+    insert into benchmarks (game_id, target_id, over, value, stat)  values {}
+'''
 
+mark_value = "({},{},{},{},'{}'),"
 
