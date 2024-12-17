@@ -8,7 +8,6 @@ rename_cols = {
 drop_cols = [
     unnamed_level.format('2', '1'),
     unnamed_level.format('23', '1'),
-    'Opp_1',
     'G',
     'Date'
 ]

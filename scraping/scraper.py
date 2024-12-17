@@ -9,11 +9,11 @@ import scraping.constants as c
 def scrape_players(link, opp, names):
     ref_links = get_ref_links(link)
     df = pd.read_html(link)
-    # players = df[7]
-    players = df[13]
+    players = df[7]
+    #players = df[13]
     percentiles = get_percentiles(df[1])
-    # summary = get_summary(df[4])
-    summary = get_summary(df[7])
+    summary = get_summary(df[4])
+    #summary = get_summary(df[7])
     players.sort_values('WS', ascending=False, inplace=True)
     player_info = df[0]
     player_data, win_shares = get_player_data(player_info, players.head(4), ref_links, names)
@@ -22,16 +22,7 @@ def scrape_players(link, opp, names):
             percentiles, summary)
 
 
-def scrape_team(link):
-    game_log = link[:-5] + c.game_logs
-    df = pd.read_html(game_log)[0]
-    df.columns = c.cols_to_str(list(df.columns))
-    queue = [1, 2]
-    df.columns = df.columns.map(lambda x: f'{x}_{queue.pop(0)}' if x == 'Opp' else x)
-    df.drop(c.drop_cols, axis=1, inplace=True)
-    df.rename(c.rename_cols, axis=1, inplace=True)
-    df = df[~df['W/L'].isna()]
-    df = df[df['W/L'] != 'W/L']
+def apply_weight(df):
     df['is_w'] = df['W/L'].apply(lambda x: 1 if 'W' in x else 0)
     df['is_1ot'] = df['W/L'].apply(lambda x: 1 if '1 0T' in x else 0)
     df['is_2ot'] = df['W/L'].apply(lambda x: 1 if '2 OT' in x else 0)
@@ -45,12 +36,43 @@ def scrape_team(link):
     df['Opponent/DRB'] = df['Opponent/TRB'] - df['Opponent/ORB']
     df['School/ATO'] = df['School/AST'] / df['School/TOV']
     df['Opponent/ATO'] = df['Opponent/AST'] / df['Opponent/TOV']
-    df.drop(['School/TRB', 'Opponent/TRB'], axis=1, inplace=True)
+    return df.drop(['School/TRB', 'Opponent/TRB'], axis=1)
+
+
+def get_game_log(link):
+    game_log = link[:-5] + c.game_logs
+    df = pd.read_html(game_log)[0]
+    df.columns = c.cols_to_str(list(df.columns))
+    queue = [1, 2]
+    df.columns = df.columns.map(lambda x: f'{x}_{queue.pop(0)}' if x == 'Opp' else x)
+    df.drop(c.drop_cols, axis=1, inplace=True)
+    df.rename(c.rename_cols, axis=1, inplace=True)
+    df = df[~df['W/L'].isna()]
+    return df[df['W/L'] != 'W/L']
+
+
+def scrape_team(link):
+    df = get_game_log(link)
+    df.drop(['Opp_1'], axis=1, inplace=True)
+    df = apply_weight(df)
     win = df[df['is_w'] == 1]
     loss = df[df['is_w'] == 0]
     win.drop(['W/L', 'is_w'], axis=1, inplace=True)
     loss.drop(['W/L', 'is_w'], axis=1, inplace=True)
     return win, loss
+
+
+def get_box_score(link):
+    df = get_game_log(link)
+    game = df[df['Opp_1'] == 'Northeastern']
+    return game.iloc[-1]
+
+
+def get_post_stats(link, team):
+    df = get_game_log(link)
+    df = apply_weight(df)
+    game = df[df['Opp_1'] == team].index[-1]
+    return df.loc[:game - 1]
 
 
 def get_player_data(info, players, ref_links, names):
@@ -133,3 +155,9 @@ def get_summary(df):
             'FG%': df['FG%'].values[-1],
             '3P%': df['3P%'].values[-1],
             'FT%': df['FT%'].values[-1]}
+
+
+def get_player_game(link):
+    df = pd.read_html(link)[0]
+    game = df[df['Opp'] == "Northeastern"]
+    return df.loc[game.index[0]]

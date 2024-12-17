@@ -24,6 +24,12 @@ from players
 where team_id = {}
 '''
 
+get_players_id = '''
+select name_first || ' ' || name_last as player_name, player_id, jersey_num, bball_ref
+from players
+where team_id = {}
+'''
+
 get_player_by_name = '''
 select player_id
 from players
@@ -42,5 +48,13 @@ insert_mark = '''
     insert into benchmarks (game_id, target_id, over, value, stat)  values {}
 '''
 
+get_marks = '''
+select * from benchmarks where game_id = {}
+'''
+
 mark_value = "({},{},{},{},'{}'),"
+
+get_ref_name = 'select ref_name from teams where team_id = {}'
+
+neu_link = 'https://www.sports-reference.com/cbb/schools/northeastern/women/2025.html'
 

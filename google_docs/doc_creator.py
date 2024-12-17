@@ -42,9 +42,4 @@ class DocCreator:
         return f'https://docs.google.com/document/d/{document_id}'
 
 
-if __name__ == '__main__':
-    c = DocCreator()
-    print(c.create_doc('HI', [{'updateTableCellStyle': {'tableCellStyle': {'backgroundColor': {'color': {'rgbColor': {'red': 1.0, 'green': 1.0, 'blue': 1.0}}}}, 'fields': 'backgroundColor', 'tableRange': {'tableCellLocation': {'tableStartLocation': {'index': 124, 'segmentId': ''}, 'rowIndex': 2, 'columnIndex': 0}, 'rowSpan': 1, 'columnSpan': 1}}}]))
-
-
 

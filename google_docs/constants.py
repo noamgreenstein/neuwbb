@@ -186,28 +186,29 @@ def format_request(old_text, new_text):
 def order_percentiles(data):
     percentiles = [[] for _ in range(10)]
     for pctl in data:
-        pct = pctl[1] if pctl[0] not in ['PF', 'TOV'] else 100 - pctl[1]
+        pct = 100 - pctl[1] if pctl[0] not in ['PF', 'TOV'] else pctl[1]
         amt = pctl[2] if '%' not in pctl[0] else round(100 * float(pctl[2]), 1)
         if pct <= 1:
             percentiles[9].append(f'{pctl[0]}({amt})')
-        if pct <= 2:
+        elif pct <= 2:
             percentiles[8].append(f'{pctl[0]}({amt})')
-        if pct <= 5:
+        elif pct <= 5:
             percentiles[7].append(f'{pctl[0]}({amt})')
-        if pct <= 10:
+        elif pct <= 10:
             percentiles[6].append(f'{pctl[0]}({amt})')
-        if pct <= 20:
+        elif pct <= 20:
             percentiles[5].append(f'{pctl[0]}({amt})')
-        if pct >= 80:
-            percentiles[4].append(f'{pctl[0]}({amt})')
-        if pct >= 90:
-            percentiles[3].append(f'{pctl[0]}({amt})')
-        if pct >= 95:
-            percentiles[2].append(f'{pctl[0]}({amt})')
-        if pct >= 98:
-            percentiles[1].append(f'{pctl[0]}({amt})')
+
         if pct >= 99:
             percentiles[0].append(f'{pctl[0]}({amt})')
+        elif pct >= 98:
+            percentiles[1].append(f'{pctl[0]}({amt})')
+        elif pct >= 95:
+            percentiles[2].append(f'{pctl[0]}({amt})')
+        elif pct >= 90:
+            percentiles[3].append(f'{pctl[0]}({amt})')
+        elif pct >= 80:
+            percentiles[4].append(f'{pctl[0]}({amt})')
     return percentiles
 
 

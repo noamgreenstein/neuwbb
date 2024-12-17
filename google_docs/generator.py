@@ -1,8 +1,8 @@
 from reporting.pregame import PreGameReport
+from reporting.postgame import PostGameReport
 import google_docs.constants as c
 
 
-# [124, 301, 512, 682, 838]
 def pregame(pregame_data: PreGameReport, game_data, players):
     requests = []
     colors = c.team_colors[pregame_data.opp]
@@ -43,7 +43,7 @@ def pregame(pregame_data: PreGameReport, game_data, players):
     opp_name = game_data[0][2:].strip('Vs. ').strip('@ ').strip('\n')
     requests.append(c.format_request('oppname', opp_name))
     team_percentiles = c.order_percentiles(pregame_data.percentiles['Team'])
-    opp_percentiles = c.order_percentiles(pregame_data.percentiles['Team'])
+    opp_percentiles = c.order_percentiles(pregame_data.percentiles['Opponent'])
     requests.extend(c.percentile_requests(c.team_percentiles, team_percentiles))
     requests.extend(c.percentile_requests(c.opp_percentiles, opp_percentiles))
 
@@ -64,9 +64,15 @@ def pregame(pregame_data: PreGameReport, game_data, players):
     footer = c.format_replace('footer_text')
     footer['replaceAllText']['replaceText'] = footer_text
     requests.append(footer)
-
     return requests, game_data[2] + ' Pregame'
 
 
-def postgame():
+def postgame(postgame_data: PostGameReport, game_data, players):
+    requests = []
+    colors = c.team_colors[postgame_data.opp]
+
+    # Header
+    # Benchmark Summary
+    # Expected Stats
+    # Player Benchmarks
     return []
