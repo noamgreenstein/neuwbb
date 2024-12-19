@@ -1,10 +1,8 @@
 from datetime import datetime
 from pathlib import Path
-
 import constants as c
 from google_docs.doc_creator import DocCreator
 from database import database
-from html_reports import generator
 
 if __name__ == '__main__':
     db = database.Database()
@@ -16,7 +14,7 @@ if __name__ == '__main__':
     report.generate()
     players = db.get_all(c.get_player_info.format(game[0][1]))
     requests, file = c.choices.get(choice, None)[1](report, game[1:], players)
-    creator = DocCreator()
+    creator = DocCreator(c.choices.get(choice, None)[2])
     print(creator.create_doc(file, requests))
 
 

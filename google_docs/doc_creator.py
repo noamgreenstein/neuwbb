@@ -3,7 +3,7 @@ from google.oauth2 import service_account
 
 
 class DocCreator:
-    def __init__(self):
+    def __init__(self, template):
         self.scopes = [
             'https://www.googleapis.com/auth/documents',
             'https://www.googleapis.com/auth/drive'  # Added Drive scope for sharing
@@ -14,7 +14,7 @@ class DocCreator:
         self.docs_service = build('docs', 'v1', credentials=self.credentials)
         self.drive_service = build('drive', 'v3', credentials=self.credentials)
         self.email = "ngreenstein3@gmail.com"
-        self.template = '1z7RUl_h0UPIAB_O2EIZT4I9dsPPQglrw1XlTmO2PuvY'
+        self.template = template
 
     def create_doc(self, title, requests):
         new_file = self.drive_service.files().copy(
@@ -23,7 +23,8 @@ class DocCreator:
                 'name': title}
         ).execute()
         document_id = new_file.get('id')
-
+        # d = self.docs_service.documents().get(documentId=document_id).execute()
+        # print(d.get('body').get('content', []))
         self.drive_service.permissions().create(
             fileId=document_id,
             body={
@@ -40,6 +41,10 @@ class DocCreator:
         ).execute()
 
         return f'https://docs.google.com/document/d/{document_id}'
+
+if __name__ == '__main__':
+    dc = DocCreator('1ExvH_zrzaERGTc6ZRAVF_AdCWQNDacV5BQ7dlcjwoko')
+    dc.create_doc('Test1', [])
 
 
 

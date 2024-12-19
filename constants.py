@@ -5,8 +5,8 @@ from reporting.pregame import PreGameReport
 from google_docs.generator import pregame, postgame
 
 choices = {
-    '1': (PreGameReport, pregame),
-    '2': (PostGameReport, postgame)
+    '1': (PreGameReport, pregame, '1z7RUl_h0UPIAB_O2EIZT4I9dsPPQglrw1XlTmO2PuvY'),
+    '2': (PostGameReport, postgame, '1ExvH_zrzaERGTc6ZRAVF_AdCWQNDacV5BQ7dlcjwoko')
 }
 
 

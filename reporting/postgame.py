@@ -24,3 +24,7 @@ class PostGameReport:
         self.neu_stats = s.get_post_stats(c.neu_link, self.opp_ref)
         for player in self.players:
             self.player_stats[player[1]] = s.get_player_game(player[3])
+        self.box_score['Opponent/DRB'] = int(self.box_score['Opponent/TRB']) - int(self.box_score['Opponent/ORB'])
+        self.box_score['School/DRB'] = int(self.box_score['School/TRB']) - int(self.box_score['School/ORB'])
+        self.box_score['Opponent/ATO'] = float(self.box_score['Opponent/AST']) / int(self.box_score['Opponent/TOV'])
+        self.box_score['School/ATO'] = float(self.box_score['School/AST']) / float(self.box_score['School/TOV'])
