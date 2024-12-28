@@ -48,14 +48,21 @@ class PreGameReport:
 
         def add_mark(data, target, name):
             if data['AUC'] > .7:
-                opt_val = data['optimal amount']
+                opt_amt = data['optimal amount']
                 drt = data['direction']
-                pct = '%' in data
-                if str(opt_val) != 'nan' and drt != 'Flat':
+                pct = '%' in name
+                ato = 'ATO' in name
+                if str(opt_amt) != 'nan' and drt != 'Flat':
+                    if pct:
+                        opt_val = round(opt_amt * 100, 0)
+                    elif ato:
+                        opt_val = round(opt_amt, 2)
+                    else:
+                        opt_val = round(opt_amt, 0)
+
                     return c.mark_value.format(self.game_id, target, drt == "Reverse",
-                                               round(opt_val * 100, 0) if pct else int(
-                                                   round(opt_val, 0)),
-                                               name)
+                                                   opt_val,
+                                                   name)
             return ''
 
         for mark in self.team_data:

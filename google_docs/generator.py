@@ -131,7 +131,8 @@ def postgame(postgame_data: PostGameReport, game_data, players):
             player_header = f'{player[0]} #{player[2]}: {player_marks_summary[0]}'
             exc = f'Exceeded: {player_marks_summary[1]}'
             fl = f'Failed: {player_marks_summary[2]}'
-            player_marks_text += f'{player_header}\n{exc}\n{fl}\n'
+            # see if there is a way to bold first line??
+            player_marks_text += f'{player_header}\n{exc}\n{fl}\n\n'
     requests.append(f.format_request('player_mark_summary', player_marks_text))
 
     # Footer
