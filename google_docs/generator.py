@@ -77,7 +77,7 @@ def postgame(postgame_data: PostGameReport, game_data, players):
 
     # Change Background for table
     for i in range(4):
-        requests.append(f.format_bg_change(570, 0, i, colors[0]))
+        requests.append(f.format_bg_change(654, 0, i, colors[0]))
 
     # Avg Stats
     q = []
@@ -91,12 +91,14 @@ def postgame(postgame_data: PostGameReport, game_data, players):
         diff = round(val - avg, 1)
         diff_col = 'neu_diff' + info[0] if is_neu else 'opp_diff' + info[0]
         diff_color = c.diffs[(val > avg, val == avg)]
-        table_idx = 176 if is_neu else 570
+        table_idx = 176 if is_neu else 654
 
         q.append(f.format_request(c.box_scores[stat], str(val)))
         q.append(f.format_request(avg_replace, str(avg)))
         q.append(f.format_request(diff_col, str(diff)))
         requests.append(f.format_bg_change(table_idx, info[1], 3, diff_color))
+
+
 
     requests.extend(q)
     # Header

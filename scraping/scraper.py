@@ -9,11 +9,11 @@ import scraping.constants as c
 def scrape_players(link, opp, names):
     ref_links = get_ref_links(link)
     df = pd.read_html(link)
-    players = df[7]
-    #players = df[13]
+    # players = df[7]
+    players = df[13]
     percentiles = get_percentiles(df[1])
-    summary = get_summary(df[4])
-    #summary = get_summary(df[7])
+    # summary = get_summary(df[4])
+    summary = get_summary(df[7])
     players.sort_values('WS', ascending=False, inplace=True)
     player_info = df[0]
     player_data, win_shares = get_player_data(player_info, players.head(4), ref_links, names)

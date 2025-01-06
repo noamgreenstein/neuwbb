@@ -98,6 +98,8 @@ box_scores = {
     'Opponent/BLK': 'neu_blk',
     'Opponent/STL': 'neu_stl',
     'Opponent/TOV': 'neu_tov',
+    'Opponent/3PA': 'neu_3pa',
+    'Opponent/3P': 'neu_3pm',
     'School/pts': 'opp_pts',
     'School/AST': 'opp_ast',
     'School/ORB': 'opp_orb',
@@ -115,6 +117,8 @@ averages = {
     'School/BLK': ('_blk', 6),
     'School/STL': ('_stl', 5),
     'School/TOV': ('_tov', 7),
+    'School/3PA': ('_3pa', 8),
+    'School/3P': ('_3pm', 9),
 }
 
 diffs = {

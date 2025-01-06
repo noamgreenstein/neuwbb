@@ -1,5 +1,6 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+import subprocess
 
 
 class DocCreator:
@@ -24,7 +25,8 @@ class DocCreator:
         ).execute()
         document_id = new_file.get('id')
         # d = self.docs_service.documents().get(documentId=document_id).execute()
-        # print(d.get('body').get('content', []))
+        # subprocess.run('pbcopy', text=True, input=str(d.get('body').get('content', [])))
+        # print('Copied')
         self.drive_service.permissions().create(
             fileId=document_id,
             body={
@@ -42,9 +44,7 @@ class DocCreator:
 
         return f'https://docs.google.com/document/d/{document_id}'
 
+
 if __name__ == '__main__':
     dc = DocCreator('1ExvH_zrzaERGTc6ZRAVF_AdCWQNDacV5BQ7dlcjwoko')
     dc.create_doc('Test1', [])
-
-
-
